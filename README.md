@@ -255,6 +255,51 @@ curl -w "\n" -s -X GET http://localhost:8080/persons/943cae2e-748f-4403-92b4-004
 }
 ```
 
+## Enabling persistence
+
+Since 0.3.0 of Kogito, there is an option to enable persistence to preserve process instance state across application restarts. That supports long running process instances that can be resumed at any point in time.
+
+### Prerequisites
+
+Kogito uses Infinispan as the persistence service so you need to have Infinispan server installed and running. Version of the Infinispan is aligned with Quarkus BOM so make sure the right version is installed.
+
+### Add dependencies to project
+
+```xml
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-infinispan-client</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>infinispan-persistence-addon</artifactId>
+  <version>${kogito.version}</version>
+</dependency>
+```
+
+### Configure connection with Infinispan server
+
+Add following into the ```src/main/resources/application.properties``` file (create the file if it does not exist)
+
+```properties
+quarkus.infinispan-client.server-list=localhost:11222
+```
+
+You can run a local instance of Infinispan (11.0.0.Final in this case) by running the following commands:
+
+```bash
+docker pull infinispan/server:11.0.0.Final
+docker run -d -p 11222:11222 infinispan/server:11.0.0.Final
+```
+
+## Test with enabled persistence
+After configuring persistence on the project level, you can test and verify that the process instance state is preserved across application restarts.
+
+* start Infinispan server
+
+* build and run your project
+
+* execute non adult use case
 
 
 

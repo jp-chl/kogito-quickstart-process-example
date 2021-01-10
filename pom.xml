@@ -17,6 +17,7 @@
     <quarkus-plugin.version>1.10.5.Final</quarkus-plugin.version>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+    <kogito.version>1.0.0.Final</kogito.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -33,6 +34,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus</artifactId>
+      <version>${kogito.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -51,6 +53,15 @@
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-infinispan-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>infinispan-persistence-addon</artifactId>
+      <version>${kogito.version}</version>
     </dependency>
   </dependencies>
   <build>
