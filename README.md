@@ -37,6 +37,8 @@ touch src/main/resources/org/acme/kogito/person.bpmn2
 
 Replace ```Person.java``` content with the following code:
 
+<script src="https://gist.github.com/jp-chl/c0712ce8f80ecd2e120ad822a7052941.js"></script>
+
 Replace ```person-rules.drl``` content with the following code:
 
 ## Desing the process
