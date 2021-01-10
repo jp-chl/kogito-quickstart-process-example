@@ -118,13 +118,24 @@ To model this process yourself, just follow these steps:
 3. Drag a Task / Business Rule from the palette and drop it next to start event, link it with start event. Go to its properties:
     * In General properties, set its Name as ```Evaluate person```
         * You have to set an Implementation/Execution rule in order to avoid this kind of error: "_Rule task "Evaluate person" is invalid: you did not set a unit name, a rule flow group or a decision model"_.
-    * In Implementation/Execution:
+    * In Implementation/Execution properties:
         * Rule Language: ```DRL```.
         * Rule Flow Group: Click on the combo box and select "```New```", then write down ```person```.
     * In Data Assignments:
-        * Set data input and output (map person process variable to input data with name person and same for data output) by clicking on "```+Add```" button and choosing Data Type as Custom (```org.acme.kogito.model.Person```).
-
-
+        * Set data input and output (map person process variable to input data with name person and same for data output) by clicking on "```+Add```" button and choosing Data Type as Custom (```org.acme.kogito.model.Person```) as ```Name``` and ```Source``` as well.
+4. Drag a Gateway/Exclusive (XOR) from the palette and drop it next to the business rule task, link it with rule task.
+5. Drag a Tasks/User Task from the palette and drop it next to the gateway, link it with gateway.
+    * In General properties, set its Name as ```Special Handling for children```.
+    * In Implementation/Execution properties:
+        * Set its task name as ```ChildrenHandling```.
+        * In Assignments, set ```Data Input and Assignments``` (map person process variable to input data with name person) by clicking on "```+Add```" button, choosing Data Type as Custom (```org.acme.kogito.model.Person```) and set ```person``` as ```Name``` and ```Source``` as well; ```No Data Outputs and Assignments``` this time.
+6. Drag the End Events → End from the palette and drop it next to the user task, link it with the user task, and set its name as "```End Event 1```".
+7. Drag the End Events → End from the palette and drop it next to the gateway, link it with the user task, and set its name as "```End Event 2```".
+8. On the line between XOR Gateway and "Special Handling for children" Task:
+    * In Implementation/Execution properties, set the Expression as: ```return person.isAdult() == false;```; with language Java.
+9. On the line between XOR Gateway and "End Event 2":
+    * In Implementation/Execution properties, set the Expression as: ```return person.isAdult() == true;```; with language Java.
+10. Save the file.
 ---
 
 # Auto generated README
