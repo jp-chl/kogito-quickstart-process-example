@@ -102,13 +102,12 @@ You should end with the following process:
 
 ![Person Process](readme-images/person-process.png)
 
-
 Go to ```person.bpmn2``` file.
 To model this process yourself, just follow these steps:
 
 1. Click anywhere but an object (Whole Process properties).
     * Set process name as "```Person Process```"
-    * ID: ```persons```
+    * ID: ```persons```; _This will be the endpoint prefix_.
     * Package: ```org.acme.kogito```
     * ProcessType: ```public```
     * Version: ```1.0```
@@ -136,9 +135,132 @@ To model this process yourself, just follow these steps:
 9. On the line between XOR Gateway and "End Event 2":
     * In Implementation/Execution properties, set the Expression as: ```return person.isAdult() == true;```; with language Java.
 10. Save the file.
+
+## Testing the application
+
+* Running in dev mode: ```./mvnw clean compile quarkus:dev.```
+* Running in JVM mode: ```./mvnw package; java -jar ./target/kogito-quickstart-1.0.0-SNAPSHOT-runner.jar```
+
+Just send request to the service with giving the person as JSON payload.
+
+```bash
+curl -X POST http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json' -d '{"person": {"name":"John Quark", "age": 20}}'
+```
+
+In the response, the person should be approved as an adult and that should also be visible in the response payload.
+
+```json
+{
+  "id": "8c0f6d46-b073-44b4-97fe-8dcb811c0ed7",
+  "person": {
+    "name": "John Quark",
+    "age": 20,
+    "adult": true
+  }
+}
+```
+
+You can also verify that there are no more active instances.
+
+```bash
+curl -w "\n" -s -X GET http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json'
+```
+
+```json
+[]
+```
+
+To verify the non adult case, send another request with the age set to less than 18.
+
+```bash
+curl -w "\n" -s -X POST http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json' -d '{"person": {"name":"Jenny Quark", "age": 15}}'
+```
+
+```json
+{
+    "id":"943cae2e-748f-4403-92b4-004f26c22538",
+    "person": {
+        "name":"Jenny Quark",
+        "age":15,
+        "adult":false
+    }
+}
+```
+
+This time there should be one active instance.
+
+```bash
+curl -w "\n" -s -X GET http://localhost:8080/persons -H 'content-type: application/json' -H 'accept: application/json'
+```
+
+```json
+[
+  {
+    "id": "943cae2e-748f-4403-92b4-004f26c22538",
+    "person": {
+      "name": "Jenny Quark",
+      "age": 15,
+      "adult": false
+    }
+  }
+]
+```
+
+Or by replacing ```{uuid}``` with the id attribute taken from the response.
+
+```bash
+curl -w "\n" -s -X GET http://localhost:8080/persons/{uuid}/tasks -H 'content-type: application/json' -H 'accept: application/json'
+#curl -w "\n" -s -X GET http://localhost:8080/persons/943cae2e-748f-4403-92b4-004f26c22538/tasks -H 'content-type: application/json' -H 'accept: application/json'
+```
+
+```json
+[
+  {
+    "id": "e7b80432-0dd8-48c2-aada-2a8107bc2b41",
+    "nodeInstanceId": "cbe707c0-059a-433d-948c-4492110f236a",
+    "name": "ChildrenHandling",
+    "state": 0,
+    "phase": "active",
+    "phaseStatus": "Ready",
+    "parameters": {
+      "Skippable": "false",
+      "TaskName": "ChildrenHandling",
+      "NodeName": "Special Handling for children",
+      "person": {
+        "name": "Jenny Quark",
+        "age": 15,
+        "adult": false
+      }
+    },
+    "results": {}
+  }
+]
+```
+
+You can get the details of the task by calling another endpoint, replace uuids with the values taken from the responses (```uuid-1``` is the process instance id and ```uuid-2``` is the task instance id). First corresponds to the process instance id and the other to the task instance id.
+
+```bash
+curl -w "\n" -s -X GET http://localhost:8080/persons/943cae2e-748f-4403-92b4-004f26c22538/ChildrenHandling/e7b80432-0dd8-48c2-aada-2a8107bc2b41 -H 'content-type: application/json' -H 'accept: application/json'
+```
+
+```json
+{
+  "person": {
+    "name": "Jenny Quark",
+    "age": 15,
+    "adult": false
+  },
+  "id": "e7b80432-0dd8-48c2-aada-2a8107bc2b41",
+  "name": "ChildrenHandling"
+}
+```
+
+
+
+
 ---
 
-# Auto generated README
+# Auto generated README (maven)
 
 ## kogito-quickstart project
 
