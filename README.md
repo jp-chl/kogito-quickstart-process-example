@@ -1,4 +1,77 @@
-# kogito-quickstart project
+# Kogito process example
+
+> _Based on [https://quarkus.io/guides/kogito](https://quarkus.io/guides/kogito)_
+
+There are some caveats that are not mentioned in official documentation. Here there are the steps to fulfill this example sucessfully.
+
+---
+
+## Setup
+
+> _I use VSCode_.
+
+I recommend to install the following add-ons for VSCode:
+
+* Quarkus: [https://marketplace.visualstudio.com/items?itemName=redhat.vscode-quarkus](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-quarkus)
+
+* Kogito Bundle: [https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle](https://marketplace.visualstudio.com/items?itemName=kie-group.vscode-extension-kogito-bundle)
+
+## Create maven project
+
+```bash
+mvn io.quarkus:quarkus-maven-plugin:1.10.5.Final:create -DprojectGroupId=org.acme -DprojectArtifactId=kogito-quickstart -Dextensions="kogito"
+
+cd kogito-quickstart
+```
+
+## Writing the application
+
+```bash
+mkdir -p src/main/java/org/acme/kogito/model
+touch src/main/java/org/acme/kogito/model/Person.java
+
+mkdir -p src/main/resources/org/acme/kogito
+touch src/main/resources/org/acme/kogito/person-rules.drl
+touch src/main/resources/org/acme/kogito/person.bpmn2
+```
+
+Replace ```Person.java``` content with the following code:
+
+Replace ```person-rules.drl``` content with the following code:
+
+## Desing the process
+
+You should end with the following process:
+
+![Person Process](readme-images/person-process.png)
+
+
+Go to ```person.bpmn2``` file.
+To model this process yourself, just follow these steps:
+
+1. Click anywhere but an object (Whole Process properties).
+    * Set process name as "```Person Process```"
+    * ID: ```persons```
+    * Package: ```org.acme.kogito```
+    * ProcessType: ```public```
+    * Version: ```1.0```
+    * Imports: Set custom ```org.acme.kogito.model.Person```
+    * Define a Process Data / Process Variable with name ```person``` of type ```org.acme.kogito.model.Person```
+2. Drag a Start Event and set its name as ```StartProcess```, with no Implementation/Execution SLA Due Date (blank).
+3. Drag a Task / Business Rule from the palette and drop it next to start event, link it with start event. Go to its properties:
+    * In General properties, set its Name as ```Evaluate person```
+        * You have to set an Implementation/Execution rule in order to avoid this kind of error: "_Rule task "Evaluate person" is invalid: you did not set a unit name, a rule flow group or a decision model"_.
+    * In Implementation/Execution:
+        * Rule Language: ```DRL```.
+        * Rule Flow Group: Click on the combo box and select "```New```", then write down ```person```.
+    * In Data Assignments
+
+
+---
+
+# Auto generated README
+
+## kogito-quickstart project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
