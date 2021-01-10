@@ -37,9 +37,64 @@ touch src/main/resources/org/acme/kogito/person.bpmn2
 
 Replace ```Person.java``` content with the following code:
 
-<script src="https://gist.github.com/jp-chl/c0712ce8f80ecd2e120ad822a7052941.js"></script>
+```java
+package org.acme.kogito.model;
+
+public class Person {
+
+	private String name;
+	private int age;
+	private boolean adult;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public boolean isAdult() {
+		return adult;
+	}
+
+	public void setAdult(boolean adult) {
+		this.adult = adult;
+	}
+
+	@Override
+	public String toString() {
+		return "Person [name=" + name + ", age=" + age + ", adult=" + adult + "]";
+	}
+}
+```
 
 Replace ```person-rules.drl``` content with the following code:
+
+```java
+package org.acme.kogito
+
+import org.acme.kogito.model.Person;
+
+
+rule "Is adult" ruleflow-group "person"
+
+when
+    $person: Person(age > 18)
+then
+    modify($person) {
+    	setAdult(true)
+    };
+end
+```
 
 ## Desing the process
 
@@ -66,7 +121,8 @@ To model this process yourself, just follow these steps:
     * In Implementation/Execution:
         * Rule Language: ```DRL```.
         * Rule Flow Group: Click on the combo box and select "```New```", then write down ```person```.
-    * In Data Assignments
+    * In Data Assignments:
+        * Set data input and output (map person process variable to input data with name person and same for data output) by clicking on "```+Add```" button and choosing Data Type as Custom (```org.acme.kogito.model.Person```).
 
 
 ---
